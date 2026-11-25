@@ -8,7 +8,7 @@ import secrets
 from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "dev-only-change-me")
+app.secret_key = os.environ.get("SECRET_KEY")
 app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax", SESSION_COOKIE_SECURE=os.getenv("COOKIE_SECURE", "0") == "1")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 DB_PATH = Path(os.getenv("ORDERS_DB_PATH", str(Path(__file__).with_name("orders.db"))))
