@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Orders Admin — WhiskeyBox{% endblock %}
+{% block content %}
+<div class="admin-head">
+  <div><p class="eyebrow">ADMIN · ORDERS</p><h1>Order checklist</h1><p class="admin-muted">{{ pending_count }} order(s) still need fulfillment.</p></div>
+  <div class="admin-actions"><a class="button outline" href="{{ url_for('admin_revenue') }}">Revenue collected →</a><form method="post" action="{{ url_for('admin_logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button dark" type="submit">Logout</button></form></div>
+</div>
+{% if orders %}
+<div class="admin-order-list">
+{% for order in orders %}
+  <article class="admin-order panel {% if order.fulfilled %}is-fulfilled{% endif %}">
+    <div class="admin-order-top">
+      <div><span class="order-number-small">Order #{{ order.id }}</span><span class="status-pill {% if order.fulfilled %}done{% else %}pending{% endif %}">{% if order.fulfilled %}Fulfilled{% else %}To do{% endif %}</span><p class="admin-muted">{{ order.created_at }}</p></div>
+      <strong class="admin-total">AED {{ '%.2f'|format(order.total) }}</strong>
+    </div>
+    <div class="admin-customer-grid">
+      <div><span>Customer</span><strong>{{ order.customer_name }}</strong></div>
+      <div><span>Phone</span><strong>{{ order.phone }}</strong></div>
+      <div><span>Email</span><strong>{{ order.email or '—' }}</strong></div>
+      <div class="wide"><span>Address</span><strong>{{ order.address }}</strong></div>
+      <div class="wide"><span>Notes</span><strong>{{ order.notes or '—' }}</strong></div>
+      <div><span>Payment</span><strong>{{ order.payment_method }}</strong></div>
+    </div>
+    <div class="admin-items"><span class="admin-label">Order items</span>{% for item in order["order_lines"] %}<div class="admin-item"><span>{{ item.quantity }} × {{ item.name }}</span><strong>AED {{ '%.2f'|format(item.quantity * item.price) }}</strong></div>{% endfor %}</div>
+    <form class="fulfillment-form" method="post" action="{{ url_for('toggle_fulfillment', order_id=order.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label class="todo-check"><input type="checkbox" name="fulfilled" value="1" {% if order.fulfilled %}checked{% endif %} onchange="this.form.submit()"><span>Order fulfilled</span></label>
+      <noscript><button class="button dark" type="submit">Update status</button></noscript>
+    </form>
+  </article>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty panel"><div>📋</div><h2>No orders yet</h2><p>Customer orders will appear here after they submit the checkout form.</p></div>
+{% endif %}
+{% endblock %}

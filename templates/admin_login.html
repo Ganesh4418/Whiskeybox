@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Admin Login — WhiskeyBox{% endblock %}
+{% block content %}
+<section class="admin-login panel">
+  <p class="eyebrow">PRIVATE AREA</p>
+  <h1>Admin login</h1>
+  <p class="admin-muted">Enter the admin password to manage orders.</p>
+  <form method="post" class="admin-login-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" required autocomplete="current-password" autofocus>
+    <button class="button dark full" type="submit">Open admin</button>
+  </form>
+</section>
+{% endblock %}

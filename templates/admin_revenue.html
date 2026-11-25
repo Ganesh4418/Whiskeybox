@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Revenue Collected — WhiskeyBox{% endblock %}
+{% block content %}
+<div class="admin-head">
+  <div><p class="eyebrow">ADMIN · SALES</p><h1>Revenue collected</h1><p class="admin-muted">Fulfilled orders are included in the collected total.</p></div>
+  <div class="admin-actions"><a class="button outline" href="{{ url_for('admin_orders') }}">← Orders</a><form method="post" action="{{ url_for('admin_logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button dark" type="submit">Logout</button></form></div>
+</div>
+<section class="revenue-hero panel">
+  <p class="eyebrow">TOTAL SOLD · FULFILLED ORDERS</p>
+  <div class="revenue-number">AED {{ '%.2f'|format(stats['collected_total']) }}</div>
+  <p class="admin-muted">{{ stats['fulfilled_count'] }} fulfilled order(s)</p>
+</section>
+<div class="revenue-stats">
+  <article class="panel"><span>All orders</span><strong>{{ stats['order_count'] }}</strong></article>
+  <article class="panel"><span>Fulfilled orders</span><strong>{{ stats['fulfilled_count'] }}</strong></article>
+  <article class="panel"><span>Pending order value</span><strong>AED {{ '%.2f'|format(stats['pending_total']) }}</strong></article>
+</div>
+<p class="admin-muted revenue-note">When you tick “Order fulfilled” on the Orders page, that order's total is added to this revenue figure. This is based on fulfillment status, not a separate payment verification.</p>
+{% endblock %}
