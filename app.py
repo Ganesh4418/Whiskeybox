@@ -11,7 +11,9 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-only-change-me")
 app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax", SESSION_COOKIE_SECURE=os.getenv("COOKIE_SECURE", "0") == "1")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
-DB_PATH = Path(os.getenv("ORDERS_DB_PATH", str(Path(__file__).with_name("orders.db"))))
+DB_PATH = os.path.join("/tmp", "whiskeybox.db")
+
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 # SMS credentials are configured as environment variables on the hosting provider.
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
@@ -26,7 +28,7 @@ PRODUCT_BY_ID = {p["id"]: p for p in PRODUCTS}
 
 
 def connect_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=30)
     conn.row_factory = sqlite3.Row
     return conn
 
