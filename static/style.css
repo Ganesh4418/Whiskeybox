@@ -36,3 +36,47 @@
   display: none;
 }
 
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding: 12px 70px 12px 14px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.password-wrapper input:focus {
+    outline: none;
+    border-color: #c89b3c;
+    box-shadow: 0 0 0 3px rgba(200, 155, 60, 0.15);
+}
+
+#togglePassword {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #c89b3c;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px;
+    transition: color 0.2s ease;
+}
+
+#togglePassword:hover {
+    color: #a77c20;
+}
+
+#togglePassword:focus-visible {
+    outline: 2px solid #c89b3c;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
