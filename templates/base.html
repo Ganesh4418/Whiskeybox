@@ -6,6 +6,20 @@
   <title>{% block title %}WhiskeyBox — Order Online{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+<script>
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById("password");
+    const toggleButton = document.getElementById("togglePassword");
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleButton.textContent = "Hide";
+    } else {
+        passwordInput.type = "password";
+        toggleButton.textContent = "Show";
+    }
+}
+</script>
 <body>
 <header class="topbar">
   <a class="brand" href="{{ url_for('home') }}"><span class="brand-icon">M</span>WhiskeyBox</a>
