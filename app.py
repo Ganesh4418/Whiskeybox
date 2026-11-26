@@ -314,31 +314,32 @@ def admin_logout():
 @admin_required
 def admin_orders():
     with connect_db() as conn:
-        orders = conn.execute("SELECT * FROM orders ORDER BY created_at DESC, id DESC").fetchall()
+        orders = conn.execute(
+            "SELECT * FROM orders ORDER BY created_at DESC, id DESC"
+        ).fetchall()
+
     parsed_orders = []
+
     for order in orders:
-     data = dict(order)
-     try:
-        data["order_lines"] = json.loads(data["items_json"])
-     except (TypeError, ValueError):
-      data["order_lines"] = []
-    parsed_orders.append(data)
-    pending_count = sum(1 for order in parsed_orders if not order["fulfilled"])
-    return render_template("admin_orders.html", orders=parsed_orders, pending_count=pending_count)
+        data = dict(order)
 
+        try:
+            data["order_lines"] = json.loads(data["items_json"])
+        except (TypeError, ValueError):
+            data["order_lines"] = []
 
-@app.post("/admin/order/<int:order_id>/fulfillment")
-@admin_required
-def toggle_fulfillment(order_id):
-    if not valid_csrf():
-        flash("Security token expired. Please refresh and try again.", "error")
-        return redirect(url_for("admin_orders"))
-    fulfilled = 1 if request.form.get("fulfilled") == "1" else 0
-    with connect_db() as conn:
-        conn.execute("UPDATE orders SET fulfilled = ? WHERE id = ?", (fulfilled, order_id))
-    flash(f"Order #{order_id} marked {'fulfilled' if fulfilled else 'pending'}.", "success")
-    return redirect(request.referrer if request.referrer and request.referrer.startswith("/admin") else url_for("admin_orders"))
+        parsed_orders.append(data)
 
+    pending_count = sum(
+        1 for order in parsed_orders
+        if not order["fulfilled"]
+    )
+
+    return render_template(
+        "admin_orders.html",
+        orders=parsed_orders,
+        pending_count=pending_count
+    )
 
 @app.route("/admin/revenue")
 @admin_required
