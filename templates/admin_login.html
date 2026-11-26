@@ -1,14 +1,57 @@
 {% extends 'base.html' %}
 {% block title %}Admin Login — WhiskeyBox{% endblock %}
+
 {% block content %}
+
 <section class="admin-login panel">
   <p class="eyebrow">PRIVATE AREA</p>
   <h1>Admin login</h1>
   <p class="admin-muted">Enter the admin password to manage orders.</p>
-  <form method="post" class="admin-login-form"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-    <label for="password">Password</label>
-    <input id="password" type="password" name="password" required autocomplete="current-password" autofocus>
-    <button class="button dark full" type="submit">Open admin</button>
+
+  <form method="post" class="admin-login-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+<label for="adminPassword">Password</label>
+
+<div style="position: relative;">
+  <input
+    type="password"
+    name="password"
+    id="adminPassword"
+    required
+    style="width: 100%; padding-right: 60px;"
+  >
+
+  <button
+    type="button"
+    id="togglePassword"
+    onclick="togglePassword()"
+    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; cursor: pointer;"
+  >
+    Show
+  </button>
+</div>
+
+<button class="button dark full" type="submit">
+  Open admin
+</button>
+
   </form>
 </section>
+
+<script>
+function togglePassword() {
+    const password = document.getElementById("adminPassword");
+    const button = document.getElementById("togglePassword");
+
+    if (password.type === "password") {
+        password.type = "text";
+        button.textContent = "Hide";
+    } else {
+        password.type = "password";
+        button.textContent = "Show";
+    }
+}
+</script>
+
 {% endblock %}
