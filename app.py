@@ -49,9 +49,7 @@ def init_db():
         create_sql = """CREATE TABLE IF NOT EXISTS {table_name} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_name TEXT NOT NULL,
-            phone TEXT NOT NULL,
-            email TEXT,
-            address TEXT NOT NULL,
+            Room_no TEXT NOT NULL,
             notes TEXT,
             items_json TEXT NOT NULL,
             subtotal REAL NOT NULL,
@@ -65,7 +63,7 @@ def init_db():
             conn.execute("DROP TABLE IF EXISTS orders_migrating")
             conn.execute(create_sql.format(table_name="orders_migrating"))
             allowed = [
-                "id", "customer_name", "phone", "email", "address", "notes",
+                "id", "customer_name", "Room_no", "notes",
                 "items_json", "subtotal", "total", "payment_method", "created_at"
             ]
             common = [column for column in allowed if column in old_columns]
@@ -197,13 +195,11 @@ def checkout():
 
     if request.method == "POST":
         name = request.form.get("name", "").strip()
-        phone = request.form.get("phone", "").strip()
-        email = request.form.get("email", "").strip()
-        address = request.form.get("address", "").strip()
+        Room_no = request.form.get("Room_no", "").strip()
         notes = request.form.get("notes", "").strip()
         payment_method = request.form.get("payment_method", "Cash on delivery")
-        if not name or not phone or not address:
-            flash("Please enter your name, phone number and delivery address.", "error")
+        if not name or not Room_no:
+            flash("Please enter your name and delivery Room_no.", "error")
             return render_template("checkout.html", items=items, subtotal=subtotal, total=total)
         if request.form.get("age_confirmed") != "yes":
             flash("Please confirm legal-age and local-law eligibility before ordering.", "error")
@@ -215,17 +211,15 @@ def checkout():
         order_items = [{"id": i["id"], "name": i["name"], "quantity": i["quantity"], "price": i["price"]} for i in items]
         with connect_db() as conn:
             cursor = conn.execute("""INSERT INTO orders
-                (customer_name, phone, email, address, notes, items_json, subtotal, total, payment_method)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                (name, phone, email, address, notes, json.dumps(order_items), subtotal, total, payment_method))
+                (customer_name, Room_no, notes, items_json, subtotal, total, payment_method)
+                VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                (name, Room_no, notes, json.dumps(order_items), subtotal, total, payment_method))
             order_id = cursor.lastrowid
         # Optional automatic vendor SMS. The customer is never redirected to WhatsApp.
         message_lines = [
             f"NEW ORDER #{order_id}",
             f"Customer: {name}",
-            f"Phone: {phone}",
-            f"Address: {address}",
-            f"Email: {email or '-'}",
+            f"Room_no: {Room_no}",
             f"Notes: {notes or '-'}",
             "Items:",
         ]
